@@ -11,9 +11,11 @@ def get_settings_value(key):
 
     return settings1.get(key)
 
-
 class JslintCommand(sublime_plugin.TextCommand):
     edit = {}
+
+    def show_errors(self, jslint):
+        return get_settings_value('show_errors_on_save') and jslint['totalErrors'] > 0
 
     def notify(self, jslint):
         images_dir = os.path.join(sublime.packages_path(), package) + '/images/'
@@ -41,7 +43,7 @@ class JslintCommand(sublime_plugin.TextCommand):
             if log_level == 'all' or log_level == 'shortlog':
                 self.notify(jslint)
 
-            if log_level == 'all' or log_level == 'log':
+            if log_level == 'all' or log_level == 'log' or self.show_errors(jslint):
                 self.show_panel(jslint)
 
     def show_panel(self, jslint):

@@ -3,5 +3,7 @@
 
 	"result_line_regex": "line ([0-9]+)",
 
-	"show_notification_on_save": true
+	"show_notification_on_save": true,
+
+	"show_errors_on_save": false
 }
