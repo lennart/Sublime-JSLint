@@ -40,7 +40,7 @@ class JslintCommand(sublime_plugin.TextCommand):
 
             jslint = json.loads(os.popen(get_settings_value("node_path") + ' "%(linter)s" --%(log_level)s "%(file)s"' % {'linter': package_dir + '/linter.js', 'log_level': log_level, 'file': fn}).read())
 
-            if log_level == 'all' or log_level == 'shortlog':
+            if get_settings_value('show_notification_on_save') and (log_level == 'all' or log_level == 'shortlog'):
                 self.notify(jslint)
 
             if log_level == 'all' or log_level == 'log' or self.show_errors(jslint):
@@ -60,5 +60,5 @@ class JslintCommand(sublime_plugin.TextCommand):
 
 class ApplyJslintOnJavaScriptSave(sublime_plugin.EventListener):
     def on_post_save(self, view):
-        if get_settings_value('show_notification_on_save'):
+        if get_settings_value('show_notification_on_save') or get_settings_value('show_errors_on_save'):
             view.run_command('jslint')
