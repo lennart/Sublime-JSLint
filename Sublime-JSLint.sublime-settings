@@ -1,9 +1,14 @@
 {
-	"result_file_regex": "file \\(([^)]+)\\).*line ([0-9]+)",
+	//this is defaulted per-platform, can be overidden by user settings
+	//"node_path": "/opt/local/bin/node",
 
-	"result_line_regex": "line ([0-9]+)",
-
+	//Growl notification on save
 	"show_notification_on_save": true,
 
-	"show_errors_on_save": false
+	//open result window on save
+	"show_errors_on_save": false,
+
+	//JSLint output format for result navigation
+	"result_file_regex": "file \\(([^)]+)\\).*line ([0-9]+)",
+	"result_line_regex": "line ([0-9]+)"
 }
