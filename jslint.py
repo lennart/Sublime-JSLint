@@ -50,10 +50,16 @@ class JslintCommand(sublime_plugin.TextCommand):
         output_view = self.view.window().get_output_panel('jslint')
 
         output_view.settings().set("result_file_regex", get_settings_value('result_file_regex'))
-
         output_view.settings().set("result_line_regex", get_settings_value('result_line_regex'))
+        output_view.settings().set("result_base_dir", os.path.dirname(self.view.file_name()))
 
         output_view.insert(self.edit, 0, jslint['log'])
+
+        # Set the selection to the beginning of the output_view to make result search work as soon as the panel appears (see exec.py in the Default package)
+        edit = output_view.begin_edit()
+        output_view.sel().clear()
+        output_view.sel().add(sublime.Region(0))
+        output_view.end_edit(edit)
 
         self.view.window().run_command('show_panel', {'panel': 'output.jslint'})
 
