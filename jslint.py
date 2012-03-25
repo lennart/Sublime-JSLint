@@ -15,7 +15,7 @@ class JslintCommand(sublime_plugin.TextCommand):
     edit = {}
 
     def show_errors(self, jslint):
-        return get_settings_value('show_errors_on_save') and jslint['totalErrors'] > 0
+        return get_settings_value('show_errors_on_save') and self.has_errors(jslint)
 
     def notify(self, jslint):
         images_dir = os.path.join(sublime.packages_path(), package) + '/images/'
@@ -37,14 +37,20 @@ class JslintCommand(sublime_plugin.TextCommand):
 
             if fn == '':
                 fn = self.view.file_name()
-
             jslint = json.loads(os.popen(get_settings_value("node_path") + ' "%(linter)s" --%(log_level)s "%(file)s"' % {'linter': package_dir + '/linter.js', 'log_level': log_level, 'file': fn}).read())
 
             if get_settings_value('show_notification_on_save') and (log_level == 'all' or log_level == 'shortlog'):
                 self.notify(jslint)
 
-            if log_level == 'all' or log_level == 'log' or self.show_errors(jslint):
-                self.show_panel(jslint)
+            if self.has_errors(jslint):
+                if log_level == 'all' or log_level == 'log' or self.show_errors(jslint):
+                    self.show_panel(jslint)
+            else:
+                print("Hiding panel, success!")
+                self.hide_panel(jslint)
+
+    def has_errors(self, jslint):
+        return jslint['totalErrors'] > 0
 
     def show_panel(self, jslint):
         output_view = self.view.window().get_output_panel('jslint')
@@ -62,6 +68,9 @@ class JslintCommand(sublime_plugin.TextCommand):
         output_view.end_edit(edit)
 
         self.view.window().run_command('show_panel', {'panel': 'output.jslint'})
+
+    def hide_panel(self, jslint):
+        self.view.window().run_command('hide_panel', {'panel': 'output.jslint'})
 
 
 class ApplyJslintOnJavaScriptSave(sublime_plugin.EventListener):
